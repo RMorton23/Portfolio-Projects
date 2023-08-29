@@ -1,3 +1,10 @@
+--COVID 19 Data Exploration
+--This code explores data on COVID-19 using a variety of SQL techniques including Joins, Aggregate Functions,
+--Arithmetic Functions, CTEs, Temporary Tables, Data Type Conversion, and Creating Views.
+
+--Let's explore the data!
+--First, we confirm that our import was successful
+
 SELECT *
 FROM portfolio_projects..[covid deaths]
 WHERE continent is not null
@@ -8,6 +15,7 @@ ORDER BY 3,4
 --FROM portfolio_projects..[covid vaccinations]
 --ORDER BY 3,4
 
+	
 -- Select data that we are going to be using
 
 SELECT 
@@ -21,8 +29,8 @@ FROM portfolio_projects..[covid deaths]
 WHERE continent is not null
 ORDER BY 1,2
 
---looking at total cases vs total deaths
--- shows the likelihood of dying if you contract covid in the USA
+--Looking at total cases vs. total deaths
+-- This query shows the likelihood of dying if you contract COVID in the USA
 SELECT 
 	location,
 	date,
@@ -34,8 +42,8 @@ WHERE location like '%states%'
 WHERE continent is not null
 ORDER BY 1,2
 
---Looking at total cases vs population
---shows what percentage of population got covid
+--Looking at total cases vs. population
+--shows what percentage of the population got covid
 SELECT 
 	location,
 	date,
@@ -47,7 +55,7 @@ WHERE location like '%states%'
 WHERE continent is not null
 ORDER BY 1,2
 
---looking at countries with highest infection rate compared to population
+--Looking at countries with the highest infection rate compared to the population
 
 SELECT
 location,
@@ -61,7 +69,7 @@ GROUP BY
 	location
 ORDER BY population_infection_percentage DESC
 
---looking at countries with highest death count per population
+--Looking at countries with the highest death count per population
 
 SELECT
 location,
@@ -73,10 +81,10 @@ GROUP BY
 	location
 ORDER BY total_death_count DESC
 
---lets break things down by continent
+--Let's break things down by continent
 
 
---showing continents with highest death count
+--Showing continents with the highest death count
 
 SELECT
 continent,
@@ -87,7 +95,7 @@ GROUP BY
 	continent
 ORDER BY total_death_count DESC
 
---looking at which continent had the highest infection rate per population
+--Looking at which continent had the highest infection rate per population
 
 SELECT
 continent,
@@ -100,7 +108,7 @@ GROUP BY
 ORDER BY population_infection_percentage DESC
 
 
---global numbers
+--Global numbers
 
 SELECT 
 	date,
@@ -115,7 +123,7 @@ ORDER BY 1,2
 
 
 
---joining covid vaccines on covid deaths to look at total population vs vaccinations
+--Joining covid vaccines on covid deaths to look at total population vs. vaccinations
 
 SELECT 
 dea.continent,
@@ -132,7 +140,7 @@ FROM
 WHERE dea.continent is not null
 ORDER BY 2,3
 
---use cte
+--Using a CTE
 
 WITH PopvsVac (continent, location, date, population, new_vaccinations, rolling_vaccination_count)
 AS
@@ -157,7 +165,7 @@ SELECT *, (rolling_vaccination_count/population)*100 AS percentage_population_va
 FROM PopvsVac
 
 
---Temp table
+--Temp Table
 DROP TABLE IF exists #percent_population_vaccinated --workaround if your temp table 'has already been created'
 CREATE TABLE #percent_population_vaccinated
 (
@@ -191,8 +199,8 @@ SELECT *, (rolling_people_vaccinated/population)*100
 FROM #percent_population_vaccinated
 
 
---create views to store data later for viz
---this view is for percent population vaccinated
+--Create views to store data later for viz
+--This view is for the percent of the population vaccinated
 CREATE VIEW percent_population_vaccinated AS 
 SELECT 
 dea.continent,
@@ -210,7 +218,7 @@ WHERE dea.continent is not null
 --ORDER BY 2,3
 
 
---this view is global cases and global deaths
+--This view is global cases and global deaths
 CREATE VIEW global_numbers AS
 SELECT 
 	date,
@@ -222,7 +230,7 @@ WHERE continent is not null
 GROUP BY date
 --ORDER BY 1,2
 
---this view shows death count by continent
+--This view shows the death count by continent
 CREATE View total_death_continent AS
 SELECT
 continent,
@@ -233,7 +241,8 @@ GROUP BY
 	continent
 --ORDER BY total_death_count DESC
 
---creating view of countries with highest infection count
+	
+--Creating view of countries with the highest infection count
 
 CREATE VIEW countries_infection_count AS
 SELECT
@@ -249,7 +258,8 @@ GROUP BY
 --ORDER BY population_infection_percentage DESC
 
 
---this view looks at total populations vs total vaccinations
+	
+--This view looks at total populations vs. total vaccinations
 
 CREATE VIEW population_vaccination_rate AS
 SELECT 
