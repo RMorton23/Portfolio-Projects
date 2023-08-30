@@ -1,5 +1,5 @@
 --COVID 19 Data Exploration
---This code explores data on COVID-19 (2020-2021) using a variety of SQL techniques including Joins, Aggregate Functions,
+--This code explores data on COVID-19 (2020-4/2021) using a variety of SQL techniques including Joins, Aggregate Functions,
 --Arithmetic Functions, CTEs, Temporary Tables, Data Type Conversion, and Creating Views.
 
 --Let's explore the data!
