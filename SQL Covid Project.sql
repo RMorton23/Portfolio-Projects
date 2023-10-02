@@ -1,6 +1,9 @@
 --COVID 19 Data Exploration
 --This code explores data on COVID-19 (2020-4/2021) using a variety of SQL techniques including Joins, Aggregate Functions,
 --Arithmetic Functions, CTEs, Temporary Tables, Data Type Conversion, and Creating Views.
+--Below is the link to view the interactive dashboard created using the SQL COVID-19 Analysis code in this portfolio.
+
+--https://public.tableau.com/app/profile/rachel.morton/viz/CovidDashboard2020-2021_16931584749190/Dashboard3
 
 --Let's explore the data!
 --First, we confirm that our import was successful
