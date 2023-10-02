@@ -1,0 +1,421 @@
+---
+title: "Cyclistic Analysis"
+author: "Rachel Morton"
+date: "2023-09-28"
+output: html_document
+---
+
+
+## This analysis is a case study from the Google Data Analytics certificate.It is originally based on a case study written by Kevin Hartman, which can be found here: https://artscience.blog/home/divvy-dataviz-case-study
+
+## The purpose of this analysis is to aggregate multiple datasets into a single dataframe, then conduct simple analysis to answer the business question "In what ways do members and casual riders use bike share services differently?" for our stakeholders, Cyclistic's Marketing Analytics team and Executive team.
+
+## The datasets used in this analysis are from 2016, broken down by quarter. They were sourced from Motivate International Inc. under this license: https://divvybikes.com/data-license-agreement. After looking through a few different years of data available, I opted to work with 2016 as it seemed to be relatively unbiased, valid, and accessible. This data should help us identify differences in ridership between members and casual users.
+
+
+
+
+
+# Step 1: Prepare Environment for Analysis
+#### Loading the packages necessary to complete the analysis and setting the working directory to simplify calls to data
+
+```{r library and directory, warning=FALSE}
+# Make sure to install packages before loading if you haven't already.
+library(tidyverse) #- for wrangling data
+library(lubridate) #- for date functions
+library(ggplot2) #- for visualization
+library(dplyr) #- to manipulate data
+library(readxl) #- to import data
+library(scales) #- to customize plot formatting
+setwd("C:/Users/...") #Make sure to input your own directory path here!
+getwd()
+
+```
+
+
+
+# Step 2: Import and Standardize Data
+#### Importing the datasets
+
+```{r import data}
+q1_2016 <- read_xlsx("Divvy_Trips_2016_Q1_xlsx.xlsx")
+q2.1_2016 <- read_xlsx("Divvy_Trips_2016_Q2.1_xlsx.xlsx")
+q2.2_2016 <- read_xlsx("Divvy_Trips_2016_Q2.2_xlsx.xlsx")
+q3.1_2016 <- read_xlsx("Divvy_Trips_2016_Q3.1_xlsx.xlsx")
+q3.2_2016 <- read_xlsx("Divvy_Trips_2016_Q3.2_xlsx.xlsx")
+q4_2016 <- read_xlsx("Divvy_Trips_2016_Q4_xlsx.xlsx")
+
+```
+
+#### Checking column names for consistency
+
+```{r colnames, warning=FALSE}
+colnames(q1_2016)
+colnames(q2.1_2016)
+colnames(q2.2_2016)
+colnames(q3.1_2016)
+colnames(q3.2_2016)
+colnames(q4_2016)
+
+```
+
+#### Standardizing column names in preparation for aggregation
+
+```{r rename columns, warning=FALSE}
+(q1_2016 <- rename(q1_2016
+                   ,trip_id=trip_id
+                   ,bike_id=bikeid
+                   ,start_time=starttime
+                   ,stop_time=stoptime
+                   ,trip_duration_seconds=tripduration
+                   ,from_station_id=from_station_id
+                   ,to_station_id=to_station_id
+                   ,user_type=usertype
+                   ,from_station_name=from_station_name
+                   ,to_station_name=to_station_name
+                   ,gender=gender
+                   ,birth_year=birthyear
+                   ,ride_length=ride_length
+                   ,day_of_week=day_of_week))
+
+(q2.1_2016 <- rename(q2.1_2016
+                   ,trip_id=trip_id
+                   ,bike_id=bikeid
+                   ,start_time=starttime
+                   ,stop_time=stoptime
+                   ,trip_duration_seconds=tripduration
+                   ,from_station_id=from_station_id
+                   ,to_station_id=to_station_id
+                   ,user_type=usertype
+                   ,from_station_name=from_station_name
+                   ,to_station_name=to_station_name
+                   ,gender=gender
+                   ,birth_year=birthyear
+                   ,ride_length=ride_length
+                   ,day_of_week=day_of_week))
+
+(q2.2_2016 <- rename(q2.2_2016
+                   ,trip_id=trip_id
+                   ,bike_id=bikeid
+                   ,start_time=starttime
+                   ,stop_time=stoptime
+                   ,trip_duration_seconds=tripduration
+                   ,from_station_id=from_station_id
+                   ,to_station_id=to_station_id
+                   ,user_type=usertype
+                   ,from_station_name=from_station_name
+                   ,to_station_name=to_station_name
+                   ,gender=gender
+                   ,birth_year=birthyear
+                   ,ride_length=ride_length
+                   ,day_of_week=day_of_week))
+
+(q3.1_2016 <- rename(q3.1_2016
+                   ,trip_id=trip_id
+                   ,bike_id=bikeid
+                   ,start_time=starttime
+                   ,stop_time=stoptime
+                   ,trip_duration_seconds=tripduration
+                   ,from_station_id=from_station_id
+                   ,to_station_id=to_station_id
+                   ,user_type=usertype
+                   ,from_station_name=from_station_name
+                   ,to_station_name=to_station_name
+                   ,gender=gender
+                   ,birth_year=birthyear
+                   ,ride_length=ride_length
+                   ,day_of_week=day_of_week))
+
+(q3.2_2016 <- rename(q3.2_2016
+                   ,trip_id=trip_id
+                   ,bike_id=bikeid
+                   ,start_time=starttime
+                   ,stop_time=stoptime
+                   ,trip_duration_seconds=tripduration
+                   ,from_station_id=from_station_id
+                   ,to_station_id=to_station_id
+                   ,user_type=usertype
+                   ,from_station_name=from_station_name
+                   ,to_station_name=to_station_name
+                   ,gender=gender
+                   ,birth_year=birthyear
+                   ,ride_length=ride_length
+                   ,day_of_week=day_of_week))
+
+(q4_2016 <- rename(q4_2016
+                   ,trip_id=trip_id
+                   ,bike_id=bikeid
+                   ,start_time=starttime
+                   ,stop_time=stoptime
+                   ,trip_duration_seconds=tripduration
+                   ,from_station_id=from_station_id
+                   ,to_station_id=to_station_id
+                   ,user_type=usertype
+                   ,from_station_name=from_station_name
+                   ,to_station_name=to_station_name
+                   ,gender=gender
+                   ,birth_year=birthyear
+                   ,ride_length=ride_length
+                   ,day_of_week=days_of_week))
+```
+
+#### Verifying consistency of column names and datatypes
+
+```{r inspecting dataframes, echo=TRUE, warning=FALSE}
+str(q1_2016)
+str(q2.1_2016)
+str(q2.2_2016)
+str(q3.1_2016)
+str(q3.2_2016)
+str(q4_2016)
+
+```
+
+
+
+# Step 3: Aggregate Data for Analysis
+#### Aggregating all of the datasets into one dataframe for analysis
+
+```{r aggregate dataframes, warning=FALSE}
+all_trips <- bind_rows(q1_2016, q2.1_2016, q2.2_2016, q3.1_2016,q3.2_2016, q4_2016)
+
+```
+
+#### Creating a secondary single dataframe to manipulate data as save point in case of error
+
+```{r creating secondary aggregated dataframe before editing data, warning=FALSE}
+all_trips_edited <-all_trips
+
+```
+
+
+
+# Step 4: Clean Data for Analysis
+#### Remove extra data
+
+```{r remove extra data, echo=TRUE, warning=FALSE}
+all_trips_edited <- all_trips_edited %>%
+  select(-c(birth_year, gender, trip_duration_seconds, ride_length))
+# Removed ride_length due to errors with the data later in the script, added back in as calculated field
+```
+
+#### Inspecting the new dataframe 
+
+```{r inspect new dataframe, echo=TRUE, warning=FALSE}
+colnames(all_trips_edited)
+nrow(all_trips_edited)
+dim(all_trips_edited)
+head(all_trips_edited)
+str(all_trips_edited)
+summary(all_trips_edited)
+
+```
+
+#### Updating user type column to current values used by Cyclistic
+
+```{r update user_types, echo=TRUE, warning=FALSE}
+all_trips_edited <- all_trips_edited %>%
+  mutate(user_type=recode(user_type
+                ,"Subscriber"="member"
+                ,"Customer"="casual"))
+
+table(all_trips_edited$user_type) #checking the output
+```
+
+#### Adding columns to break down start time into pieces
+
+```{r add column for date elements at start of trip, echo=TRUE, warning=FALSE}
+all_trips_edited$date <- as.Date(all_trips_edited$start_time)
+all_trips_edited$month <- format(as.Date(all_trips_edited$date), "%m")
+all_trips_edited$day<- format(as.Date(all_trips_edited$date), "%d")
+all_trips_edited$year<- format(as.Date(all_trips_edited$date), "%Y")
+all_trips_edited$weekday<- format(as.Date(all_trips_edited$date), "%A")
+
+```
+
+#### Adding a calculated field for ride length
+
+```{r calculating ride_length, echo=TRUE, warning=FALSE}
+all_trips_edited$ride_length <- difftime(all_trips_edited$stop_time, all_trips_edited$start_time, units = "mins")
+
+```
+
+#### Inspecting the dataframe structure
+
+```{r inspect the structure of the columns, echo=TRUE, warning=FALSE}
+str(all_trips_edited)
+
+```
+
+#### Converting ride length to a numeric datatype
+
+```{r convert ride_length, warning=FALSE}
+is.factor(all_trips_edited$ride_length)
+all_trips_edited$ride_length <- as.numeric(as.character(all_trips_edited$ride_length))
+is.numeric(all_trips_edited$ride_length)
+
+```
+
+#### Removing bad data in user types
+
+```{r removing bad user_types, warning=FALSE}
+all_trips_edited <- all_trips_edited[!(all_trips_edited$user_type == "Dependent" | all_trips_edited$user_type<0),]
+
+```
+
+
+
+# Step 5: Analyze the Data
+#### Analyzing ride length
+
+```{r descriptive analysis of ride_length, echo=TRUE, warning=FALSE}
+mean(all_trips_edited$ride_length)
+median(all_trips_edited$ride_length)
+min(all_trips_edited$ride_length)
+max(all_trips_edited$ride_length)
+
+```
+
+#### Comparing members vs. users
+
+```{r compare members vs casual users, echo=TRUE, warning=FALSE}
+aggregate(all_trips_edited$ride_length ~ all_trips_edited$user_type, FUN = mean)
+aggregate(all_trips_edited$ride_length ~ all_trips_edited$user_type, FUN = median)
+aggregate(all_trips_edited$ride_length ~ all_trips_edited$user_type, FUN = min)
+aggregate(all_trips_edited$ride_length ~ all_trips_edited$user_type, FUN = max)
+
+```
+
+#### Calculating average ride time between user types
+
+```{r avg. ride time between user types per day, echo=TRUE, warning=FALSE}
+aggregate(all_trips_edited$ride_length ~ all_trips_edited$user_type + all_trips_edited$weekday, FUN = mean)
+
+aggregate(all_trips_edited$ride_length ~ all_trips_edited$user_type + all_trips_edited$month, FUN = mean)
+```
+
+#### Putting the weekdays in order
+
+```{r correct weekday order in previous chunk output, warning=FALSE}
+all_trips_edited$weekday <- ordered(all_trips_edited$weekday, levels=c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"))
+
+```
+
+#### verifying output
+
+```{r avg. ride time between user types per day ordered, echo=TRUE, warning=FALSE}
+aggregate(all_trips_edited$ride_length ~ all_trips_edited$user_type + all_trips_edited$weekday, FUN = mean)
+
+```
+
+#### Calculating ridership by user type and time period
+
+```{r ridership by type and weekday, echo=TRUE, warning=FALSE}
+all_trips_edited %>%
+  mutate(weekday=wday(start_time, label= TRUE)) %>%
+  group_by(user_type, weekday) %>%
+  summarize(number_of_rides=n()
+            , average_duration = mean(ride_length)) %>%
+            arrange(user_type, weekday)
+            
+```
+```{r ridership by type and month, echo=TRUE, warning=FALSE}
+all_trips_edited %>%
+  mutate(weekday=wday(start_time, label= TRUE)) %>%
+  group_by(user_type, month) %>%
+  summarize(number_of_rides=n()
+            , average_duration = mean(ride_length)) %>%
+            arrange(user_type, month)
+
+```
+
+
+#### Saving Tibbles as dataframes for use in viz
+
+
+```{r turning weekly tibble into a dataframe for later use}
+
+summary_data_weekday <- all_trips_edited %>%
+  mutate(weekday=wday(start_time, label= TRUE)) %>%
+  group_by(user_type, weekday) %>%
+  summarize(number_of_rides=n()
+            , average_duration = mean(ride_length)) %>%
+            arrange(user_type, weekday)
+
+
+```
+
+```{r turning monthly tibble into a dataframe for later use}
+
+summary_data_month <- all_trips_edited %>%
+  mutate(weekday=wday(start_time, label= TRUE)) %>%
+  group_by(user_type, month) %>%
+  summarize(number_of_rides=n()
+            , average_duration = mean(ride_length)) %>%
+            arrange(user_type, month)
+
+
+```
+
+
+# Step 6: Visualize Data
+#### Plotting the number of rides by user type
+
+```{r visualize number of rides by user_type, echo=TRUE, warning=FALSE}
+all_trips_edited %>%
+  mutate(weekday=wday(start_time, label= TRUE)) %>%
+  group_by(user_type, weekday) %>%
+  summarise(
+    'number_of_rides' = n(),
+    'average_duration' = mean(ride_length, na.rm = TRUE)
+  ) %>%
+  ggplot(aes(x = weekday, y = number_of_rides, fill= user_type)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(
+    labels = c(0, 10000, 20000, 30000, 40000, 50000))
+
+```
+
+
+#### Plotting the number of trips per month by user type
+
+
+```{r number of trips per month}
+all_trips_edited %>%
+  group_by(user_type, weekday) %>%
+  summarise(
+    'number_of_rides' = n(),
+    'average_duration' = mean(ride_length, na.rm = TRUE)
+  ) %>%
+  ggplot(aes(x = month, y = number_of_rides, fill= user_type)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(
+    labels = c(0, 10000, 20000, 30000, 40000, 50000))
+```
+
+
+#### Plotting the number of rides by average duration of ride length
+
+```{r visualize average_duration of ride_length, echo=TRUE, warning=FALSE}
+all_trips_edited %>%
+  mutate(weekday=wday(start_time, label= TRUE)) %>%
+  group_by(user_type, weekday) %>%
+  summarise(
+    'number_of_rides' = n(),
+    'average_duration' = mean(ride_length, na.rm = TRUE)
+  ) %>%
+  ggplot(aes(x = weekday, y = average_duration, fill= user_type)) +
+  geom_col(position = "dodge")
+
+```
+
+
+
+# Step 7: Export Summary File for Further Analysis
+#### Exporting a summary dataframe for visualization and presentation
+
+```{r export summary data, warning=FALSE}
+write.csv(summary_data_weekday, file ="C:/Users/.../summary_weekly.csv")
+write.csv(summary_data_month, file ="C:/Users/.../summary_monthly.csv")
+write.csv(all_trips_edited, file ="C:/Users/.../all_trips.csv")
+```
