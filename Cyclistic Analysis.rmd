@@ -12,7 +12,9 @@ output: html_document
 
 ## The datasets used in this analysis are from 2016, broken down by quarter. They were sourced from Motivate International Inc. under this license: https://divvybikes.com/data-license-agreement. After looking through a few different years of data available, I opted to work with 2016 as it seemed to be relatively unbiased, valid, and accessible. This data should help us identify differences in ridership between members and casual users.
 
+## To see the non technical report in it's entirety, please follow the link: https://www.canva.com/design/DAFwPSINc7M/2f3e9C4vT6Tsvw7Y7Bg99g/edit
 
+## To find this project on Kaggle, please see kaggle link in bio or follow this link: https://www.kaggle.com/code/rachelmorton/cyclistic-market-analysis
 
 
 
