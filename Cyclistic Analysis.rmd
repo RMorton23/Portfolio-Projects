@@ -6,9 +6,9 @@ output: html_document
 ---
 
 
-## This analysis is a case study from the Google Data Analytics certificate.It is originally based on a case study written by Kevin Hartman, which can be found here: https://artscience.blog/home/divvy-dataviz-case-study
+## This analysis is a case study from the Google Data Analytics certificate. It is originally based on a case study written by Kevin Hartman, which can be found here: https://artscience.blog/home/divvy-dataviz-case-study
 
-## The purpose of this analysis is to aggregate multiple datasets into a single dataframe, then conduct simple analysis to answer the business question "In what ways do members and casual riders use bike share services differently?" for our stakeholders, Cyclistic's Marketing Analytics team and Executive team.
+## The purpose of this analysis is to aggregate multiple datasets into a single data frame, then conduct a simple analysis to answer the business question "In what ways do members and casual riders use bike share services differently?" for our stakeholders, Cyclistic Marketing Analytics team, and Executive team.
 
 ## The datasets used in this analysis are from 2016, broken down by quarter. They were sourced from Motivate International Inc. under this license: https://divvybikes.com/data-license-agreement. After looking through a few different years of data available, I opted to work with 2016 as it seemed to be relatively unbiased, valid, and accessible. This data should help us identify differences in ridership between members and casual users.
 
@@ -23,11 +23,10 @@ output: html_document
 # Make sure to install packages before loading if you haven't already.
 library(tidyverse) #- for wrangling data
 library(lubridate) #- for date functions
-library(ggplot2) #- for visualization
 library(dplyr) #- to manipulate data
 library(readxl) #- to import data
 library(scales) #- to customize plot formatting
-setwd("C:/Users/...") #Make sure to input your own directory path here!
+setwd("C:/Users/Rachel/Documents/Merit America/Portfolio Projects/coursera capstone/cyclist") #Make sure to input your own directory path here!
 getwd()
 
 ```
@@ -159,7 +158,7 @@ colnames(q4_2016)
                    ,day_of_week=days_of_week))
 ```
 
-#### Verifying consistency of column names and datatypes
+#### Verifying consistency of column names and data types
 
 ```{r inspecting dataframes, echo=TRUE, warning=FALSE}
 str(q1_2016)
@@ -174,16 +173,16 @@ str(q4_2016)
 
 
 # Step 3: Aggregate Data for Analysis
-#### Aggregating all of the datasets into one dataframe for analysis
+#### Aggregating all of the datasets into one data frame for analysis
 
 ```{r aggregate dataframes, warning=FALSE}
 all_trips <- bind_rows(q1_2016, q2.1_2016, q2.2_2016, q3.1_2016,q3.2_2016, q4_2016)
 
 ```
 
-#### Creating a secondary single dataframe to manipulate data as save point in case of error
+#### Creating a secondary single data frame to manipulate data as a save point in case of error
 
-```{r creating secondary aggregated dataframe before editing data, warning=FALSE}
+```{r creating secondary aggregated data frame before editing data, warning=FALSE}
 all_trips_edited <-all_trips
 
 ```
@@ -199,7 +198,7 @@ all_trips_edited <- all_trips_edited %>%
 # Removed ride_length due to errors with the data later in the script, added back in as calculated field
 ```
 
-#### Inspecting the new dataframe 
+#### Inspecting the new data frame 
 
 ```{r inspect new dataframe, echo=TRUE, warning=FALSE}
 colnames(all_trips_edited)
@@ -240,7 +239,7 @@ all_trips_edited$ride_length <- difftime(all_trips_edited$stop_time, all_trips_e
 
 ```
 
-#### Inspecting the dataframe structure
+#### Inspecting the data frame structure
 
 ```{r inspect the structure of the columns, echo=TRUE, warning=FALSE}
 str(all_trips_edited)
@@ -292,6 +291,9 @@ aggregate(all_trips_edited$ride_length ~ all_trips_edited$user_type, FUN = max)
 aggregate(all_trips_edited$ride_length ~ all_trips_edited$user_type + all_trips_edited$weekday, FUN = mean)
 
 aggregate(all_trips_edited$ride_length ~ all_trips_edited$user_type + all_trips_edited$month, FUN = mean)
+
+avg_ride_length_week <- aggregate(all_trips_edited$ride_length ~ all_trips_edited$user_type + all_trips_edited$weekday, FUN = mean)
+avg_ride_length_month <- aggregate(all_trips_edited$ride_length ~ all_trips_edited$user_type + all_trips_edited$month, FUN = mean)
 ```
 
 #### Putting the weekdays in order
@@ -327,13 +329,14 @@ all_trips_edited %>%
             , average_duration = mean(ride_length)) %>%
             arrange(user_type, month)
 
+
 ```
 
 
-#### Saving Tibbles as dataframes for use in viz
+#### Saving Tibbles as data frames for use in viz
 
 
-```{r turning weekly tibble into a dataframe for later use}
+```{r turning that tibble into a data frame for later use}
 
 summary_data_weekday <- all_trips_edited %>%
   mutate(weekday=wday(start_time, label= TRUE)) %>%
@@ -345,7 +348,7 @@ summary_data_weekday <- all_trips_edited %>%
 
 ```
 
-```{r turning monthly tibble into a dataframe for later use}
+```{r turning that tibble into a data frame for later use}
 
 summary_data_month <- all_trips_edited %>%
   mutate(weekday=wday(start_time, label= TRUE)) %>%
@@ -377,21 +380,6 @@ all_trips_edited %>%
 ```
 
 
-#### Plotting the number of trips per month by user type
-
-
-```{r number of trips per month}
-all_trips_edited %>%
-  group_by(user_type, weekday) %>%
-  summarise(
-    'number_of_rides' = n(),
-    'average_duration' = mean(ride_length, na.rm = TRUE)
-  ) %>%
-  ggplot(aes(x = month, y = number_of_rides, fill= user_type)) +
-  geom_col(position = "dodge") +
-  scale_y_continuous(
-    labels = c(0, 10000, 20000, 30000, 40000, 50000))
-```
 
 
 #### Plotting the number of rides by average duration of ride length
@@ -412,7 +400,7 @@ all_trips_edited %>%
 
 
 # Step 7: Export Summary File for Further Analysis
-#### Exporting a summary dataframe for visualization and presentation
+#### Exporting a summary data frame for visualization and presentation
 
 ```{r export summary data, warning=FALSE}
 write.csv(summary_data_weekday, file ="C:/Users/.../summary_weekly.csv")
