@@ -28,7 +28,7 @@ library(lubridate) #- for date functions
 library(dplyr) #- to manipulate data
 library(readxl) #- to import data
 library(scales) #- to customize plot formatting
-setwd("C:/Users/Rachel/Documents/Merit America/Portfolio Projects/coursera capstone/cyclist") #Make sure to input your own directory path here!
+setwd("C:/Users/.../cyclist") #Make sure to input your own directory path here!
 getwd()
 
 ```
